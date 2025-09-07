@@ -1,0 +1,112 @@
+.admin-panel {
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+}
+
+.admin-panel h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--primary-color);
+}
+
+.admin-section {
+    margin-bottom: 3rem;
+}
+
+.admin-section h2 {
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.admin-forms-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+@media (min-width: 768px) {
+    .admin-forms-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.admin-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+}
+
+.admin-form h3 {
+    margin-top: 0;
+}
+
+.admin-list-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+@media (min-width: 768px) {
+    .admin-list-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.admin-list {
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+}
+
+.ad-validation-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.ad-validation-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--light-color);
+    border-radius: var(--border-radius);
+    border-left: 5px solid var(--warning-color);
+}
+
+.ad-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.ad-user {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.ad-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.ad-actions .action-button-card.validate {
+    background: linear-gradient(45deg, #28a745, var(--success-color));
+    border: none;
+    color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.ad-actions .action-button-card.validate:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.4);
+    background: linear-gradient(45deg, #218838, #157347);
+}
