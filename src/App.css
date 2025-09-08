@@ -33,10 +33,20 @@ body {
     padding: 1.5rem 1rem;
     box-shadow: var(--shadow-md);
     border-bottom: 3px solid var(--secondary-color);
-    text-align: center;
+    text-align: right;
     position: sticky;
     top: 0;
     z-index: 1000;
+}
+
+.hamburger-menu {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.8rem;
+    cursor: pointer;
+    z-index: 1100;
 }
 
 .header-main {
@@ -50,12 +60,18 @@ body {
     gap: 1rem;
 }
 
+.header-branding-link {
+    text-decoration: none;
+    color: inherit;
+}
+
 .header-branding {
     text-align: right;
 }
 
 .header-title {
-    font-size: 1.8rem;
+    /* Responsive font size */
+    font-size: clamp(1.5rem, 4vw, 1.8rem);
     font-weight: 700;
     margin: 0;
 }
@@ -75,6 +91,15 @@ body {
     gap: 0.5rem 1rem;
     font-size: 1rem;
     font-weight: 500;
+    position: relative; /* Set positioning context for the mobile menu */
+}
+
+.nav-links { /* Desktop navigation links container */
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: inherit; /* Inherit gap from parent .header-nav */
 }
 
 .header-link {
@@ -105,6 +130,27 @@ body {
     min-height: 80vh;
 }
 
+/* Reusable back link style */
+.back-link {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  padding: 0.6rem 1.2rem;
+  background-color: #fff;
+  color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+  box-shadow: var(--shadow-sm);
+}
+
+.back-link:hover {
+  background-color: var(--light-color);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
 .app-footer {
     background-color: #343a40;
     color: var(--text-color-light);
@@ -113,12 +159,41 @@ body {
     margin-top: 2rem;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 992px) {
     .header-main {
-        flex-direction: column;
+        flex-wrap: nowrap;
     }
-    .header-nav {
+
+    .hamburger-menu {
+        display: block;
+        order: -1; /* Puts it at the start of the flex items */
+    }
+
+    .nav-links {
+        /* On mobile, hide the links by default */
+        display: none;
+    }
+
+    .nav-links.open {
+        /* When the menu is open, display the links as a dropdown */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        position: absolute;
+        top: 100%; /* Position it right below the header */
+        right: 0;
         width: 100%;
-        justify-content: center;
+        background: linear-gradient(45deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        padding: 2rem 1rem;
+        box-shadow: var(--shadow-md);
+        max-height: calc(100vh - 70px); /* Prevent menu from being too long */
+        overflow-y: auto;
+        z-index: 100; /* Ensure menu appears above main content */
+    }
+}
+@media (max-width: 600px) {
+    .app-main {
+        padding: 1rem;
     }
 }

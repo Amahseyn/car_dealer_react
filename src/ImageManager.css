@@ -22,12 +22,14 @@
     border: 1px solid var(--border-color);
     border-radius: 8px;
     overflow: hidden;
+    background-color: #f0f4f8; /* Add a background for letterboxing */
 }
 
 .image-thumbnail img {
     width: 100%;
-    height: 100px;
-    object-fit: cover;
+    height: auto;
+    aspect-ratio: 1 / 1; /* Make thumbnails square */
+    object-fit: contain; /* Resize to fit without cropping */
     display: block;
 }
 

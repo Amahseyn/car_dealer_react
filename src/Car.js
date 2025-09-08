@@ -1,20 +1,19 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from './api';
 import './Car.css';
 
+// Helper to format numbers to Persian
 function toPersianNumber(num) {
-  if (num === null || num === undefined) return '';
-  return num.toString().replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+    if (num === null || num === undefined) return '';
+    return num.toString().replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
 }
 
-const Car = ({ car, carType, isOwnerView, onAdDeleted }) => {
-    if (!car) return null;
+const Car = ({ car, carType, isOwnerView = false, onAdDeleted }) => {
+    const navigate = useNavigate();
 
     const handleDelete = async (e) => {
-        e.preventDefault(); // Prevent link navigation if the button is inside a link
-        e.stopPropagation(); // Stop event bubbling
-
+        e.stopPropagation(); // Prevent navigation
         if (window.confirm('آیا از حذف این آگهی اطمینان دارید؟')) {
             try {
                 await api.delete(`/listings/${carType}/${car.id}/`);
@@ -29,67 +28,34 @@ const Car = ({ car, carType, isOwnerView, onAdDeleted }) => {
         }
     };
 
-    const imageUrl = car.images && car.images.length > 0
-        ? car.images[0].image
-        : 'https://via.placeholder.com/300x200?text=No+Image';
+    const handleEdit = (e) => {
+        e.stopPropagation(); // Prevent navigation
+        navigate(`/edit-ad/${carType}/${car.id}`);
+    };
 
-    const getBadgeText = (type) => {
-        if (type === 'used-cars') return 'کارکرده';
-        if (type === 'havalehs') return 'حواله';
-        return 'صفر';
+    const handleContactClick = (e) => {
+        e.stopPropagation();
+        alert('برای هماهنگی و اطلاعات بیشتر با شماره 09361400384 تماس بگیرید.');
     };
 
     return (
-        <div className="car-card" title={car.title}>
-            <span className="car-badge">{getBadgeText(carType)}</span>
-            <img
-                src={imageUrl}
-                alt={car.title || 'تصویر خودرو'}
-                className="car-image"
-            />
+        <div className="car-card">
+            {car.adTypeName && <div className="car-badge">{car.adTypeName}</div>}
+            <img src={car.images && car.images.length > 0 ? car.images[0].image : 'https://via.placeholder.com/400x225?text=No+Image'} alt={car.title} className="car-image" />
             <div className="car-details">
-                <h2 className="car-title">{car.title || 'بدون عنوان'}</h2>
-                <p className="car-price">
-                    {car.price != null ? `${toPersianNumber(car.price.toLocaleString('fa-IR'))} تومان` : 'قیمت نامشخص'}
-                </p>
-                {carType === 'havalehs' ? (
-                    <div className="car-specs">
-                        <span title="موقعیت مکانی">
-                            <i className="fa fa-map-marker-alt" style={{ color: '#e91e63' }} /> {car.location || 'نامشخص'}
-                        </span>
-                        <span title="نوع تحویل">
-                            <i className="fa fa-truck" style={{ color: '#007bff' }} /> {car.delivery_type || 'نامشخص'}
-                        </span>
-                    </div>
-                ) : (
-                    <div className="car-specs">
-                        <span title="سال ساخت">
-                            <i className="fa fa-calendar" style={{ color: '#007bff' }} /> {car.model_year || 'نامشخص'}
-                        </span>
-                        <span title="کارکرد">
-                            <i className="fa fa-tachometer" style={{ color: '#388e3c' }} /> {car.mileage != null ? `${toPersianNumber(car.mileage.toLocaleString('fa-IR'))} کیلومتر` : 'نامشخص'}
-                        </span>
-                        <span title="رنگ">
-                            <span className="color-dot" style={{ background: car.color || '#ccc' }} /> {car.color || 'نامشخص'}
-                        </span>
-                    </div>
-                )}
-                {isOwnerView ? (
-                    <div className="owner-actions-card">
-                        <Link to={`/edit-ad/${carType}/${car.id}`} className="action-button-card edit">
-                            ویرایش
-                        </Link>
-                        <button onClick={handleDelete} className="action-button-card delete">
-                            حذف
-                        </button>
-                    </div>
-                ) : (
-                    <Link to={`/${carType}/${car.id}`} className="details-button">
-                        مشاهده جزئیات
-                    </Link>
-                )}
+                <h2 className="car-title">{car.title}</h2>
+                <p className="car-price">{car.price ? `${toPersianNumber(car.price.toLocaleString('fa-IR'))} تومان` : 'تماس بگیرید'}</p>
+                <div className="car-specs">
+                    {car.model_year && <span><i className="fa fa-calendar-alt"></i> {toPersianNumber(car.model_year)}</span>}
+                    {car.mileage != null && <span><i className="fa fa-tachometer-alt"></i> {toPersianNumber(car.mileage.toLocaleString('fa-IR'))}</span>}
+                    {car.location && <span><i className="fa fa-map-marker-alt"></i> {car.location}</span>}
+                </div>
+                <div className="card-actions">
+                    <Link to={`/${carType}/${car.id}`} className="card-btn details-button">مشاهده جزئیات</Link>
+                    <button onClick={handleContactClick} className="card-btn contact-button">تماس</button>
+                </div>
+                {isOwnerView && <div className="owner-actions-card"><button onClick={handleEdit} className="card-btn edit">ویرایش</button><button onClick={handleDelete} className="card-btn delete">حذف</button></div>}
             </div>
-
         </div>
     );
 };

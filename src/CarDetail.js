@@ -31,6 +31,7 @@ const specFields = [
   { key: 'model_year', label: 'سال ساخت', format: toPersianNumber },
   { key: 'color', label: 'رنگ' },
   { key: 'location', label: 'موقعیت' },
+  { key: 'settlement_status', label: 'وضعیت تسویه', format: displayFormat },
   { key: 'sale_condition', label: 'شرایط فروش', format: displayFormat },
   { key: 'fuel_type', label: 'نوع سوخت', format: displayFormat },
   { key: 'production_type', label: 'نوع تولید', format: displayFormat },

@@ -12,7 +12,7 @@
 .car-badge {
     position: absolute;
     top: 1rem;
-    left: 1rem;
+    right: 1rem;
     background: linear-gradient(90deg, #00c6ff 0%, #007bff 100%);
     color: var(--text-color-light);
     padding: 0.4rem 1rem;
@@ -30,8 +30,9 @@
 
 .car-image {
     width: 100%;
-    height: 220px;
-    object-fit: cover;
+    height: auto;
+    object-fit: contain; /* Resizes the image to fit, without cropping */
+    aspect-ratio: 16 / 9; /* Consistent aspect ratio for all images */
     border-bottom: 1px solid #e3e3e3;
     background: #f0f4f8;
     transition: filter 0.2s;
@@ -77,6 +78,7 @@
     border-bottom: 1px solid #eee;
     padding: 0.8rem 0;
     text-align: right;
+    flex-wrap: wrap; /* Allow specs to wrap on smaller cards */
     gap: 1.2rem;
     justify-content: flex-end;
 }
@@ -98,52 +100,94 @@
     vertical-align: middle;
 }
 
-.details-button {
-    background: linear-gradient(90deg, #007bff 0%, #00c6ff 100%);
-    color: #fff;
-    border: none;
+.card-actions {
+    display: flex;
+    align-items: stretch;
+    gap: 0.75rem;
+    margin-top: auto; /* Pushes the action area to the bottom */
+}
+
+/* --- Base Button Style for all buttons on the card --- */
+.card-btn {
+    flex-grow: 1;
+    padding: 0.8rem 1rem;
     border-radius: var(--border-radius);
-    padding: 0.75rem 1.5rem;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    margin-top: auto; /* Pushes button to the bottom */
-    transition: all 0.2s ease-in-out;
     text-decoration: none;
     text-align: center;
-    box-shadow: var(--shadow-sm);
+    font-family: inherit; /* Ensure consistent font */
+    box-sizing: border-box; /* Ensures padding and border are included in the total height/width */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease-in-out;
+    border: 2px solid transparent; /* Base border for consistent height calculation */
 }
 
-.details-button:hover {
+.card-btn:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
 }
+
+/* --- Specific Button Styles --- */
+
+.details-button {
+    background-color: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow-sm);
+    height:50px ;
+}
+
+.details-button:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.contact-button {
+    background-color: #eb4242;
+    color: #ffffff;
+    height:50px;
+    margin-left: 0;
+    margin-top: 17px;
+    box-shadow: var(--shadow-sm);
+}
+
+
+
+
 
 .owner-actions-card {
     display: flex;
     gap: 1rem;
-    margin-top: 1rem;
+    margin-top: 0.75rem; /* Match gap of card-actions */
 }
 
-.action-button-card {
-    flex-grow: 1;
-    padding: 0.8rem 1rem;
-    border: none;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 1rem;
-    font-weight: 600;
-    text-decoration: none;
-    color: #fff;
-    text-align: center;
-    transition: all 0.2s ease-in-out;
-    box-shadow: var(--shadow-sm);
-}
-.action-button-card.edit { background-color: var(--warning-color); color: #111; }
-.action-button-card.delete { background-color: var(--danger-color); }
+/* Responsive styles for mobile devices */
+@media (max-width: 600px) {
+    .car-details {
+        padding: 0.8rem 1rem;
+        gap: 0.4rem;
+    }
 
-.action-button-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+    .car-title {
+        font-size: 0.85rem; /* Smaller text for mobile */
+    }
+
+    .car-price {
+        font-size: 1.15rem; /* Smaller text for mobile */
+        margin-bottom: 0.5rem;
+    }
+
+    .car-specs span {
+        font-size: 0.85rem;
+    }
+
+    .details-button,
+    .contact-button, .card-btn {
+        padding: 0.6rem 0.5rem;
+        font-size: 0.85rem;
+    }
 }

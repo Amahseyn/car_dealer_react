@@ -27,7 +27,7 @@ const CreateAd = () => {
         fuel_type: 'بنزینی',
         production_type: 'داخلی',
         usage_type: 'سواری',
-        settlement_status: 'رزرو',
+        settlement_status: 'رزرو نشده',
         // Used car specific
         mileage: '',
         document_type: 'تک برگ',
@@ -320,9 +320,12 @@ const CreateAd = () => {
                     </>
                 )}
 
-                <button type="submit" className="form-button">
-                    {isEditing ? 'ذخیره تغییرات' : 'ثبت آگهی'}
-                </button>
+                <div className="form-actions">
+                    <button type="submit" className="form-button">
+                        {isEditing ? 'ذخیره تغییرات' : 'ثبت آگهی'}
+                    </button>
+                    <button type="button" className="form-button secondary" onClick={() => navigate(-1)}>انصراف</button>
+                </div>
             </form>
 
             {isEditing && id && (

@@ -1,22 +1,17 @@
 .car-detail-container {
     max-width: 1200px;
-    margin: 2rem auto;
+    margin: 1rem auto;
     padding: 2rem;
     background-color: var(--card-bg);
     border-radius: 12px;
     box-shadow: var(--shadow-lg);
 }
 
-.back-link {
-    display: inline-block;
-    margin-bottom: 1.5rem;
-    color: #007bff;
-    text-decoration: none;
-    font-weight: 500;
-}
-
-.back-link:hover {
-    text-decoration: underline;
+@media (max-width: 768px) {
+    .car-detail-container {
+        padding: 1rem;
+        margin: 0.5rem auto;
+    }
 }
 
 .car-detail-grid {
@@ -55,7 +50,7 @@
     background-color: rgba(0, 0, 0, 0.4);
     color: white;
     border: none;
-    font-size: 2.5rem;
+    font-size: clamp(1.5rem, 5vw, 2.5rem); /* Responsive font size */
     cursor: pointer;
     padding: 0.2rem 1rem;
     z-index: 10;
@@ -78,9 +73,11 @@
 
 .car-detail-main-image {
     width: 100%;
-    height: 450px; /* Consistent height */
-    object-fit: cover; /* Prevents distortion */
+    height: auto;
+    aspect-ratio: 16 / 9; /* Consistent aspect ratio */
+    object-fit: contain; /* Resizes the image to fit, without cropping */
     display: block;
+    border-radius: 8px; /* Softer corners for the image itself */
 }
 
 .car-detail-main-info {
@@ -89,7 +86,7 @@
 }
 
 .car-detail-title {
-    font-size: 2rem;
+    font-size: clamp(1.75rem, 5vw, 2.25rem); /* Responsive title */
     font-weight: 700;
     color: var(--text-color);
     margin: 0 0 0.5rem 0;
@@ -110,7 +107,7 @@
     gap: 1rem;
     margin-top: 1rem;
 }
-
+ 
 @media (min-width: 480px) {
     .car-detail-specs {
         grid-template-columns: repeat(2, 1fr);
@@ -120,7 +117,7 @@
 .spec-item {
     background-color: #f8f9fa;
     border-left: 4px solid var(--primary-color);
-    border-radius: var(--border-radius);
+    border-radius: 6px; /* Slightly smaller radius */
     padding: 1rem;
     display: flex;
     flex-direction: column;
@@ -150,7 +147,7 @@
 
 .action-button {
     flex-grow: 1;
-    padding: 0.75rem 1.2rem;
+    padding: 1rem 1.2rem;
     border: none;
     border-radius: var(--border-radius);
     cursor: pointer;
@@ -179,6 +176,7 @@
     font-weight: 600;
     border-radius: 16px;
     margin-bottom: 1rem;
+    width: fit-content;
     color: #fff;
 }
 

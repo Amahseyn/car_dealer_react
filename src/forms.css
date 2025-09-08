@@ -8,6 +8,13 @@
     font-family: 'Vazirmatn', Tahoma, Arial, sans-serif;
 }
 
+@media (max-width: 600px) {
+    .form-container {
+        padding: 2rem 1.5rem;
+        margin: 1rem auto;
+    }
+}
+
 .form-container h2 {
     text-align: center;
     margin-bottom: 2rem;
@@ -62,6 +69,20 @@
     font-weight: 600;
     transition: all 0.2s ease-in-out;
     box-shadow: var(--shadow-sm);
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.form-button.secondary {
+    background: #6c757d;
+}
+
+.form-button.secondary:hover {
+    background: #5a6268;
 }
 
 .form-container .form-button:hover {

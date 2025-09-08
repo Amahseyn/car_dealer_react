@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import Car from './Car';
+import SearchFilter from './SearchFilter';
+import api from './api';
 import './CarList.css';
+import './SearchFilter.css';
 
 const CarSkeleton = () => (
     <div className="car-card skeleton">
@@ -18,7 +22,32 @@ const CarSkeleton = () => (
     </div>
 );
 
-const CarList = ({ cars, loading, error, title, carType }) => {
+const CarList = ({ title, carType }) => {
+    const [cars, setCars] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [filters, setFilters] = useState({});
+
+    const fetchCars = useCallback(async (currentFilters) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const params = new URLSearchParams(currentFilters).toString();
+            const endpoint = `/listings/${carType}/?${params}`;
+            const { data } = await api.get(endpoint);
+            setCars(data.results || []);
+        } catch (e) {
+            setError(`خطا در دریافت لیست خودروها: ${e.message}`);
+            setCars([]);
+        } finally {
+            setLoading(false);
+        }
+    }, [carType]);
+
+    useEffect(() => {
+        fetchCars(filters);
+    }, [filters, fetchCars]);
+
     const renderContent = () => {
         if (loading) {
             // Display skeleton loaders while content is loading
@@ -40,7 +69,9 @@ const CarList = ({ cars, loading, error, title, carType }) => {
 
     return (
         <div>
+            <Link to="/" className="back-link">← بازگشت به صفحه اصلی</Link>
             <h2 style={{ textAlign: 'center', marginBottom: '2rem' }}>{title}</h2>
+            <SearchFilter carType={carType} onFilter={setFilters} />
             <div className="car-list-container">
                 {renderContent()}
             </div>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from './AuthContext';
+import { Link } from 'react-router-dom';
 import Car from './Car';
 import { fetchAllPaginatedResults } from './apiHelpers';
 import './CarList.css'; // Reusing the same styles
@@ -51,6 +52,7 @@ const MyAds = () => {
 
     return (
         <div>
+            <Link to="/" className="back-link">← بازگشت به صفحه اصلی</Link>
             <h2 style={{ textAlign: 'center', marginBottom: '2rem' }}>آگهی‌های من</h2>
             <div className="car-list-container">
                 {ads.length > 0 ? ads.map(ad => (
