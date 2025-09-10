@@ -139,6 +139,11 @@
     gap: 0.5rem;
 }
 
+.contact-action {
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1.5rem;
+}
 .owner-actions {
     display: flex;
     gap: 1rem;
@@ -164,6 +169,7 @@
 .action-button.edit { background-color: var(--warning-color); color: #111; }
 .action-button.delete { background-color: var(--danger-color); }
 .action-button.validate { background-color: var(--success-color); }
+.action-button.contact { background-color: var(--primary-color); width: 100%; }
 .action-button:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);

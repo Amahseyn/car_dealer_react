@@ -18,7 +18,7 @@
 
 body {
     direction: rtl;
-    text-align: right;
+    text-align: center;
     font-family: var(--font-family);
     background-color: #f4f7f9;
     background-image: linear-gradient(to top, #e3eeff 0%, #f4f7f9 100%);
@@ -34,9 +34,7 @@ body {
     box-shadow: var(--shadow-md);
     border-bottom: 3px solid var(--secondary-color);
     text-align: right;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+    position: relative;
 }
 
 .hamburger-menu {
@@ -47,12 +45,26 @@ body {
     font-size: 1.8rem;
     cursor: pointer;
     z-index: 1100;
+    padding: 0.5rem;
+    line-height: 1;
+}
+
+.toggle-menu-btn {
+    display: none;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 1rem;
+    margin-left: 1rem;
 }
 
 .header-main {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
     justify-content: space-between;
     max-width: 1200px;
@@ -70,7 +82,6 @@ body {
 }
 
 .header-title {
-    /* Responsive font size */
     font-size: clamp(1.5rem, 4vw, 1.8rem);
     font-weight: 700;
     margin: 0;
@@ -87,19 +98,10 @@ body {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: flex-end;
     gap: 0.5rem 1rem;
     font-size: 1rem;
     font-weight: 500;
-    position: relative; /* Set positioning context for the mobile menu */
-}
-
-.nav-links { /* Desktop navigation links container */
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: inherit; /* Inherit gap from parent .header-nav */
 }
 
 .header-link {
@@ -130,25 +132,24 @@ body {
     min-height: 80vh;
 }
 
-/* Reusable back link style */
 .back-link {
-  display: inline-block;
-  margin-bottom: 1.5rem;
-  padding: 0.6rem 1.2rem;
-  background-color: #fff;
-  color: var(--primary-color);
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
-  text-decoration: none;
-  font-weight: 600;
-  transition: all 0.2s ease-in-out;
-  box-shadow: var(--shadow-sm);
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    padding: 0.6rem 1.2rem;
+    background-color: #fff;
+    color: var(--primary-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+    box-shadow: var(--shadow-sm);
 }
 
 .back-link:hover {
-  background-color: var(--light-color);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+    background-color: var(--light-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
 }
 
 .app-footer {
@@ -159,39 +160,90 @@ body {
     margin-top: 2rem;
 }
 
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 @media (max-width: 992px) {
     .header-main {
+        justify-content: space-between;
         flex-wrap: nowrap;
     }
 
     .hamburger-menu {
+        display: block !important;
+    }
+
+    .toggle-menu-btn {
         display: block;
-        order: -1; /* Puts it at the start of the flex items */
     }
 
-    .nav-links {
-        /* On mobile, hide the links by default */
-        display: none;
+    .header-nav {
+        display: none; /* مخفی کردن منو در حالت بسته */
     }
 
-    .nav-links.open {
-        /* When the menu is open, display the links as a dropdown */
+    .header-nav.open {
         display: flex;
         flex-direction: column;
-        align-items: center;
-        gap: 1rem;
+        align-items: stretch;
         position: absolute;
-        top: 100%; /* Position it right below the header */
+        top: 100%;
         right: 0;
-        width: 100%;
-        background: linear-gradient(45deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-        padding: 2rem 1rem;
-        box-shadow: var(--shadow-md);
-        max-height: calc(100vh - 70px); /* Prevent menu from being too long */
+        left: 0;
+        /* A dark, semi-transparent color that complements the header gradient */
+        background: rgba(30, 28, 60, 0.9);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        padding: 0.5rem 0;
+        box-shadow: var(--shadow-lg);
+        z-index: 1200;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        max-height: calc(100vh - 70px);
         overflow-y: auto;
-        z-index: 100; /* Ensure menu appears above main content */
+    }
+
+    .header-nav.open .header-link {
+        font-size: 1.1rem;
+        padding: 1rem 1.5rem;
+        text-align: right;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 0;
+        opacity: 0;
+        animation: fadeInDown 0.4s ease-out forwards;
+    }
+
+    .header-nav.open .header-user {
+        padding: 1rem 1.5rem;
+        font-size: 1rem;
+        color: var(--warning-color);
+        background-color: transparent;
+        text-align: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        opacity: 0;
+        animation: fadeInDown 0.4s ease-out forwards;
+    }
+
+    .header-nav.open > *:nth-child(1) { animation-delay: 0.05s; }
+    .header-nav.open > *:nth-child(2) { animation-delay: 0.1s; }
+    .header-nav.open > *:nth-child(3) { animation-delay: 0.15s; }
+    .header-nav.open > *:nth-child(4) { animation-delay: 0.2s; }
+    .header-nav.open > *:nth-child(5) { animation-delay: 0.25s; }
+    .header-nav.open > *:nth-child(6) { animation-delay: 0.3s; }
+    .header-nav.open > *:nth-child(7) { animation-delay: 0.35s; }
+    .header-nav.open > *:nth-child(8) { animation-delay: 0.4s; }
+
+    .header-nav.open > *:last-child {
+        border-bottom: none;
     }
 }
+
 @media (max-width: 600px) {
     .app-main {
         padding: 1rem;

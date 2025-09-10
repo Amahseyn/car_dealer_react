@@ -6,6 +6,7 @@ import './AdminPanel.css';
 const AdminPanel = () => {
     const [brands, setBrands] = useState([]);
     const [models, setModels] = useState([]);
+    const [validatedAds, setValidatedAds] = useState([]);
     const [pendingAds, setPendingAds] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -18,9 +19,9 @@ const AdminPanel = () => {
         try {
             const brandsPromise = fetchAllPaginatedResults('/listings/brands/');
             const modelsPromise = fetchAllPaginatedResults('/listings/models/');
-            const newCarsPromise = fetchAllPaginatedResults('/listings/new-cars/?is_validated=false');
-            const usedCarsPromise = fetchAllPaginatedResults('/listings/used-cars/?is_validated=false');
-            const havalehsPromise = fetchAllPaginatedResults('/listings/havalehs/?is_validated=false');
+            const newCarsPromise = fetchAllPaginatedResults('/listings/new-cars/');
+            const usedCarsPromise = fetchAllPaginatedResults('/listings/used-cars/');
+            const havalehsPromise = fetchAllPaginatedResults('/listings/havalehs/');
 
             const [brandsData, modelsData, newCars, usedCars, havalehs] = await Promise.all([
                 brandsPromise,
@@ -33,14 +34,24 @@ const AdminPanel = () => {
             setBrands(brandsData);
             setModels(modelsData);
 
-            const allPendingAds = [
+            const allAds = [
                 ...newCars.map(ad => ({ ...ad, carType: 'new-cars' })),
                 ...usedCars.map(ad => ({ ...ad, carType: 'used-cars' })),
                 ...havalehs.map(ad => ({ ...ad, carType: 'havalehs' })),
             ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-            setPendingAds(allPendingAds);
+            const pending = [];
+            const validated = [];
+            allAds.forEach(ad => {
+                if (ad.is_validated) {
+                    validated.push(ad);
+                } else {
+                    pending.push(ad);
+                }
+            });
 
+            setPendingAds(pending);
+            setValidatedAds(validated);
         } catch (err) {
             setError('خطا در بارگذاری اطلاعات پنل مدیریت.');
             console.error(err);
@@ -81,9 +92,21 @@ const AdminPanel = () => {
         if (window.confirm(`آیا آگهی "${ad.title}" را تایید می‌کنید؟`)) {
             try {
                 await api.patch(`/listings/${ad.carType}/${ad.id}/validate/`, { is_validated: true });
-                setPendingAds(prevAds => prevAds.filter(a => a.id !== ad.id || a.carType !== ad.carType));
+                fetchData(); // Refresh data to move the ad to the validated list
             } catch (err) {
                 alert('خطا در تایید آگهی.');
+            }
+        }
+    };
+
+    const handleDeleteAd = async (ad) => {
+        if (window.confirm(`آیا از حذف آگهی "${ad.title}" اطمینان دارید؟ این عمل غیرقابل بازگشت است.`)) {
+            try {
+                await api.delete(`/listings/${ad.carType}/${ad.id}/`);
+                fetchData(); // Refresh data after deletion
+                alert('آگهی با موفقیت حذف شد.');
+            } catch (err) {
+                alert('خطا در حذف آگهی.');
             }
         }
     };
@@ -129,11 +152,11 @@ const AdminPanel = () => {
                 <div className="admin-list-container">
                     <div className="admin-list">
                         <h4>برندهای موجود</h4>
-                        <ul>{brands.map(b => <li key={b.id}>{b.name}</li>)}</ul>
+                        <div className="tag-list">{brands.map(b => <span key={b.id} className="tag">{b.name}</span>)}</div>
                     </div>
                     <div className="admin-list">
                         <h4>مدل‌های موجود</h4>
-                        <ul>{models.map(m => <li key={m.id}>{m.name}</li>)}</ul>
+                        <div className="tag-list">{models.map(m => <span key={m.id} className="tag">{m.name}</span>)}</div>
                     </div>
                 </div>
             </div>
@@ -143,15 +166,38 @@ const AdminPanel = () => {
                 <div className="ad-validation-list">
                     {pendingAds.length > 0 ? (
                         pendingAds.map(ad => (
-                            <div key={`${ad.carType}-${ad.id}`} className="ad-validation-item">
+                            <div key={`${ad.carType}-${ad.id}`} className="ad-item pending">
                                 <div className="ad-info">
                                     <strong>{ad.title}</strong>
                                     <span>({ad.car_model_name || 'مدل نامشخص'})</span>
-                                    <span className="ad-user">کاربر: {ad.user}</span>
+                                    <span className="ad-user">آگهی‌دهنده: {ad.user_full_name || `کاربر ${ad.user}`}</span>
                                 </div>
                                 <div className="ad-actions">
-                                    <a href={`/${ad.carType}/${ad.id}`} target="_blank" rel="noopener noreferrer" className="action-button-card edit">مشاهده</a>
-                                    <button onClick={() => handleValidateAd(ad)} className="action-button-card validate">تایید</button>
+                                    <a href={`/${ad.carType}/${ad.id}`} target="_blank" rel="noopener noreferrer" className="admin-action-btn view"><i className="fas fa-eye"></i> مشاهده</a>
+                                    <button onClick={() => handleValidateAd(ad)} className="admin-action-btn validate"><i className="fas fa-check"></i> تایید</button>
+                                    <button onClick={() => handleDeleteAd(ad)} className="admin-action-btn delete"><i className="fas fa-trash"></i> حذف</button>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <p>هیچ آگهی در انتظار تاییدی وجود ندارد.</p>
+                    )}
+                </div>
+            </div>
+
+            <div className="admin-section">
+                <h2>آگهی‌های تایید شده ({validatedAds.length})</h2>
+                <div className="ad-validation-list">
+                    {validatedAds.length > 0 ? (
+                        validatedAds.map(ad => (
+                            <div key={`${ad.carType}-${ad.id}`} className="ad-item validated">
+                                <div className="ad-info">
+                                    <strong>{ad.title}</strong>
+                                    <span className="ad-user">آگهی‌دهنده: {ad.user_full_name || `کاربر ${ad.user}`}</span>
+                                </div>
+                                <div className="ad-actions">
+                                    <a href={`/${ad.carType}/${ad.id}`} target="_blank" rel="noopener noreferrer" className="admin-action-btn view"><i className="fas fa-eye"></i> مشاهده</a>
+                                    <button onClick={() => handleDeleteAd(ad)} className="admin-action-btn delete"><i className="fas fa-trash"></i> حذف</button>
                                 </div>
                             </div>
                         ))

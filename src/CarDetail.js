@@ -127,12 +127,17 @@ const CarDetail = () => {
     setSelectedImageIndex(prevIndex => (prevIndex - 1 + images.length) % images.length);
   };
 
+  const handleContactClick = () => {
+    // In a real app, you'd fetch the seller's phone number. Here we use a placeholder.
+    alert('برای هماهنگی و اطلاعات بیشتر با شماره 09361400384 تماس بگیرید.');
+  };
+
   if (loading) return <p className="status-message">در حال بارگذاری...</p>;
   if (error) return <p className="status-message error">{error}</p>;
   if (!car) return <p className="status-message">خودرو پیدا نشد.</p>;
 
   const availableFields = specFields.filter(field => car[field.key] != null && car[field.key] !== '' && car[field.key] !== false);
-  const isOwner = isLoggedIn && user && user.id === car.user;
+  const canManageAd = isLoggedIn && user && (user.id === car.user || user.is_staff);
   const selectedImageUrl = images[selectedImageIndex]?.image || 'https://via.placeholder.com/600x400?text=No+Image';
 
   return (
@@ -162,7 +167,10 @@ const CarDetail = () => {
             {!car.is_validated && <span className="validation-badge pending">در انتظار تایید</span>}
             {car.is_validated && <span className="validation-badge validated">تایید شده</span>}
             <p className="car-detail-price">{car.price != null ? `${toPersianNumber(car.price.toLocaleString('fa-IR'))} تومان` : 'تماس بگیرید'}</p>
-            {isOwner && (
+            <div className="contact-action">
+                <button onClick={handleContactClick} className="action-button contact">تماس با فروشنده</button>
+            </div>
+            {canManageAd && (
                 <div className="owner-actions">
                     <Link to={`/edit-ad/${carType}/${id}`} className="action-button edit">ویرایش</Link>
                     <button onClick={handleDelete} className="action-button delete">حذف</button>
@@ -185,7 +193,7 @@ const CarDetail = () => {
             </div>
         </div>
       </div>
-      {isOwner && (
+      {canManageAd && (
         <ImageManager
             adId={car.id}
             adCarType={carType}

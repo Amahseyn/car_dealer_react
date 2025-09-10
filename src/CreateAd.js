@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from './api';
 import { useChoices } from './ChoicesContext';
+import { useAuth } from './AuthContext';
 import { fetchAllPaginatedResults } from './apiHelpers';
 import ImageManager from './ImageManager';
 import './CreateAd.css';
@@ -12,6 +13,7 @@ const CreateAd = () => {
     const navigate = useNavigate();
     const isEditing = !!id;
     const { choices } = useChoices();
+    const { user } = useAuth();
 
     const [adType, setAdType] = useState('new-cars');
     const [ad, setAd] = useState({
@@ -137,6 +139,11 @@ const CreateAd = () => {
 
         // Filter out fields that are not relevant for the current ad type
         const payload = { ...ad };
+
+        // When a regular user edits an ad, it should be re-validated.
+        if (isEditing && user && !user.is_staff) {
+            payload.is_validated = false;
+        }
         if (adType !== 'used-cars') {
             delete payload.mileage;
             delete payload.document_type;
